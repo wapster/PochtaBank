@@ -28,9 +28,12 @@ function get_result($url){
 
 function parser_simple_html($url, $town){
         $html = str_get_html(get_result($url));
-        $status_200 =  http_response_code();
-
-        if ($status_200 == 200) {
+        $headers = get_headers($url, 1);
+        if ( $headers[1] == 'HTTP/1.1 404 Not Found') {
+            echo "ошибка";
+            $html->clear();
+            unset($html);
+        } else {
             $arr = $html->find('table tr td', 0);
             $a = $arr->plaintext;
             $html->clear();
@@ -38,10 +41,6 @@ function parser_simple_html($url, $town){
             $str_start = explode('Население', $a );
             $str_end = @explode('человек (2', $str_start[1]);
             echo $town . " " . $str_end[0] . "<br>";
-        } else {
-            echo "ошибка";
-            $html->clear();
-            unset($html);
         }
 }
 
@@ -49,9 +48,7 @@ $town = 'Абакан';
 $url = 'https://ru.wikipedia.org/wiki/' . $town;
 parser_simple_html($url, $town);
 
-// $status_200 =  http_response_code();
-// if ( $status_200 ) {
-//   echo "ok";
-// } else {
-//   echo "bad";
-// }
+// $x = get_headers($url,1);
+// echo "<pre>";
+// print_r($x[1]);
+// echo "</pre>";
