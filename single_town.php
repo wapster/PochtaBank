@@ -26,27 +26,38 @@ function get_result($url){
     return $res;
 }
 
-function parser_simple_html($url, $town){
-        $html = str_get_html(get_result($url));
-        $headers = get_headers($url, 1);
+function parser_simple_html($url, $gorod){
+
+        $headers = @get_headers($url, 1);
         if ( $headers[1] == 'HTTP/1.1 404 Not Found') {
-            echo "ошибка";
-            $html->clear();
-            unset($html);
+            echo $gorod . " - HTTP/1.1 404 Not Found</br>";
+            // $html->clear();
+            // unset($html);
         } else {
-            $arr = $html->find('table tr td', 0);
-            $a = $arr->plaintext;
-            $html->clear();
-            unset($html);
-            $str_start = explode('Население', $a );
-            $str_end = @explode('человек (2', $str_start[1]);
-            echo $town . " " . $str_end[0] . "<br>";
+            $html = str_get_html(get_result($url));
+            if($html && is_object($html)) {
+                $arr = $html->find('.infobox tr td', 0);
+                $a = $arr->plaintext;
+                $html->clear();
+                unset($html);
+                $str_start = explode('Население', $a );
+                $str_end = @explode('человек (2', $str_start[1]);
+                echo $gorod . " " . $str_end[0] . "</br>";
+            } else {
+                echo "ошибка. Город: $gorod</br>";
+            }
         }
 }
 
-$town = 'Абакан';
-$url = 'https://ru.wikipedia.org/wiki/' . $town;
-parser_simple_html($url, $town);
+// $goroda = '1.txt';
+// $goroda = ['Абакан', 'Казань', 'Владивосток','Мурманск', 'алоалоапокkj'];
+$goroda = ['Абакан', 'Абинск', 'Адлер', 'Азов', 'Аксай', 'Алапаевск', 'Алатырь', 'Алейск', 'Александров', 'Алексеевка', 'Алексеевское', 'Алексин', 'Альметьевск'];
+// $gorod = 'Мурманск';
+
+foreach ($goroda as $gorod) {
+    $url = 'https://ru.wikipedia.org/wiki/' . $gorod;
+    parser_simple_html($url, $gorod);
+}
 
 // $x = get_headers($url,1);
 // echo "<pre>";
