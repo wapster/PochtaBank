@@ -2,7 +2,7 @@
 ini_set('display_errors', 'Off');
 
 $goroda = file('checked.txt', FILE_SKIP_EMPTY_LINES | FILE_IGNORE_NEW_LINES);
-// $goroda = ['абакан 3474 477'];
+// $goroda = ['Волгоград 1 016 137'];
 
 foreach ($goroda as $gorod) {
     $full_arr = preg_split("/(\s)/", $gorod, PREG_SPLIT_DELIM_CAPTURE);
