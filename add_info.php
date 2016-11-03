@@ -42,6 +42,9 @@ if ( !empty($_POST['submit']) ) {
     $current .= "\r\r";
     file_put_contents( $file, $current );
 
+    $arr = file('1.txt');
+    // echo "<pre>"; print_r($arr); echo "</pre>";
+
     // удаляем город
     // $sql = "DELETE FROM `goroda_draft` WHERE id = :id";
     // $stmt = $pdo->prepare($sql);
