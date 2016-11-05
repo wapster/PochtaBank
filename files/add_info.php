@@ -1,5 +1,3 @@
-<?php session_start(); ?>
-
 <form action="" method="post">
 
 Город:
