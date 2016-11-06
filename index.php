@@ -53,36 +53,24 @@
 if ( !empty($_POST['clean_atms_file']) ) {
 
     $office = file('office.txt', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-
     foreach ($office as $off) {
         if ( $off == 'Оценить' ) {
             $off = '';
         }
 
-        // if ($off == '(сотрудник Почта Банка)') {
-        //     $off = '';
-        // }
-        //
-        // if ( $off == 'Клиентский центр в отделении Почты России' ) {
-        //     $off .= ' (сотрудник Почта Банка)';
-        // }
-        
         $office_array[] = $off . "\n";
         file_put_contents('office.txt', $office_array);
     }
-    echo "<pre>";
-    print_r( $office_array );
-    echo "</pre>";
 
-    // $atms = file('atms.txt', FILE_SKIP_EMPTY_LINES | FILE_IGNORE_NEW_LINES);
-    // foreach ($atms as $atm) {
-    //     if ( $atm == 'Валюта: рубли') {
-    //         $atm = '';
-    //     }
-    //     $atm = str_replace('Услуги: ', '', $atm);
-    //     $arm_array[] = $atm . "\n";
-    //     file_put_contents('atms.txt', $arm_array);
-    // }
+    $atms = file('atms.txt', FILE_SKIP_EMPTY_LINES | FILE_IGNORE_NEW_LINES);
+    foreach ($atms as $atm) {
+        if ( $atm == 'Валюта: рубли') {
+            $atm = '';
+        }
+        $atm = str_replace('Услуги: ', '', $atm);
+        $arm_array[] = $atm . "\n";
+        file_put_contents('atms.txt', $arm_array);
+    }
 
 }
 
@@ -104,6 +92,8 @@ if ( !empty($_POST['submit']) ) {
     $file_office = file_get_contents( 'office.txt' );
     $office_array = explode("\n\n", $file_office);
 
+    $count_office = 0;
+
     foreach ($office_array as $office) {
         $office = explode( "\n", $office );
 
@@ -112,7 +102,7 @@ if ( !empty($_POST['submit']) ) {
             array_pop($office);
         }
 
-        $count = count($office) ."<br>";
+        $count = count($office);
         if ($count < 5) {
             $comment = '';
             array_splice($office, 2, 0, $comment);
@@ -140,6 +130,8 @@ if ( !empty($_POST['submit']) ) {
         $stmt->bindParam( ':mode', $mode, PDO::PARAM_STR);
         $stmt->execute();
 
+        $count_office++;
+
         // echo "<pre>"; print_r ($office); echo "</pre>";
     }
 
@@ -150,7 +142,9 @@ if ( !empty($_POST['submit']) ) {
     $stmt = $pdo->prepare("INSERT INTO `atms` (gorod_id, adress, whose_atm_id, mode, services)
     VALUES (:gorod_id, :adress, :whose_atm_id, :mode, :service_id)");
 
+    $count_atms = 0;
     foreach ($atms_array as $atms) {
+
         $atms = explode( "\n", $atms );
 
         $end = end($atms);
@@ -182,11 +176,15 @@ if ( !empty($_POST['submit']) ) {
         $stmt->bindParam( ':service_id', $service_id, PDO::PARAM_INT);
         $stmt->execute();
 
+        $count_atms++;
         // echo "<pre>"; print_r ($atms); echo "</pre>";
     }
 
 $stmt = $pdo->query("DELETE FROM `goroda_draft` WHERE `id` = $gorod_id");
 $stmt->execute();
 $pdo = NULL;
-echo '<script>window.location.href = "index.php";</script>';
+// echo '<script>window.location.href = "index.php";</script>';
+
+echo "Офисы: " . $count_office . "<br>";
+echo "Банкоматы: " . $count_atms;
 }
