@@ -18,7 +18,15 @@
 
 <p>
     добавлено городов: <?php echo $countAddsOffice; ?> из <?php echo $countGoroda; ?>
+    <br>осталось <?php echo ($countGoroda - $countAddsOffice); ?>
 
+    <p>
+        <input type="submit" name="submit" value="Добавить">
+    </p>
+
+    <p>
+        <input type="submit" name="clean_atms_file" value="Очистить файлы от 'шлака'">
+    </p>
 <!-- <select name="added-city">
     <option name="" value=""> - - - - -  </option> -->
     <?php
@@ -38,14 +46,6 @@
 <?php foreach ($added_city as $city) {
     echo $city . "<br>";
 } ?>
-
-<p>
-    <input type="submit" name="submit" value="Добавить">
-</p>
-
-<p>
-    <input type="submit" name="clean_atms_file" value="Очистить файлы от 'шлака'">
-</p>
 
 </form>
 
