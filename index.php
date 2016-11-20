@@ -25,27 +25,12 @@
     </p>
 
     <p>
-        <input type="submit" name="clean_atms_file" value="Очистить файлы от 'шлака'">
+        <!-- <input type="submit" name="clean_atms_file" value="Очистить файлы от 'шлака'"> -->
     </p>
 <!-- <select name="added-city">
     <option name="" value=""> - - - - -  </option> -->
-    <?php
-        require 'connect.php';
-        $stmts = $pdo->query("SELECT DISTINCT `gorod_id` FROM `office`");
-        while ($rows = $stmts->fetch()) {
-            $id_goroda = $rows['gorod_id'];
-            $stmts2 = $pdo->query("SELECT `gorod` FROM `goroda` WHERE `id` = $id_goroda");
-            while ($stroka = $stmts2->fetch()) {
-                $added_city[] = $stroka['gorod'];
-            }
-        }
-        $pdo = NULL;
-    ?>
-</p>
 
-<?php foreach ($added_city as $city) {
-    echo $city . "<br>";
-} ?>
+</p>
 
 </form>
 
@@ -185,6 +170,26 @@ $stmt->execute();
 $pdo = NULL;
 // echo '<script>window.location.href = "index.php";</script>';
 
-echo "Офисы: " . $count_office . "<br>";
-echo "Банкоматы: " . $count_atms;
+echo "<p>Офисы: " . $count_office . "<br>";
+echo "Банкоматы: " . $count_atms . "</p>";
 }
+
+
+    require 'connect.php';
+    $stmts = $pdo->query("SELECT DISTINCT `gorod_id` FROM `office`");
+    while ($rows = $stmts->fetch()) {
+        $id_goroda = $rows['gorod_id'];
+        $stmts2 = $pdo->query("SELECT `gorod` FROM `goroda` WHERE `id` = $id_goroda");
+        while ($stroka = $stmts2->fetch()) {
+            $added_city[] = $stroka['gorod'];
+        }
+    }
+    $pdo = NULL;
+    krsort($added_city);
+    $i = 0;
+    while ( $i < 3 ) {
+        foreach ($added_city as $city) {
+            echo $city . "<br>";
+            $i++;
+        }
+    }
