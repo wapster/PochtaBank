@@ -1,3 +1,13 @@
+<style media="screen">
+    .ok {
+        color: green;
+    }
+
+    .error {
+        color: red;
+    }
+</style>
+
 <form action="" method="post">
 
 <!-- Город:
@@ -33,19 +43,52 @@
 <?php
 // if ( !empty($_POST['submit']) ) {
 
-    // $scanned_directory = scandir('txt');
-    $scanned_directory = array_diff( scandir('txt'), array('..', '.') );
+    $dir = 'txt';
+    $scanned_directory = array_diff( scandir($dir), array('..', '.') );
     echo "<pre>";
     print_r( $scanned_directory );
     echo "</pre>";
 
     foreach ($scanned_directory as $town_name) {
-        if ( in_array($town_name, $list_town_not_added) ) {
-            echo "yes<br>";
+        $town_folder = $dir . '/' . $town_name;
+
+        // Проверяем является ли имя файла директорией
+        if ( is_dir($town_folder) ) {
+
+            if ( in_array($town_name, $list_town_not_added) ) {
+                $count_folder = 0;
+                $list_files = array_diff( scandir($town_folder), array('..', '.') );
+
+                if ( count($list_files) == 0 ) {
+                    echo "<div class='error'>Папка $town_name пуста</div>";
+                } else {
+                    if ( in_array('amts.txt', $list_files) ) {
+                        // обрабатываем файл amts.txt;
+                        // счетчик банкоматов ++
+                    } else echo "<div class='error'>Файл atms.txt не доступен</div>";
+
+                    if ( in_array('office.txt', $list_files) ) {
+                        // обрабатываем файл amts.txt;
+                        // счетчик офисов ++
+                    } else echo "<div class='error'>Файл office.txt не доступен</div>";
+
+
+                } // endif проверка - пуста ли папка
+
+            echo "<pre>";
+            print_r( $list_files );
+            echo "</pre>";
+
+            $count_folder++;
+            } else {
+                echo "<div class='error'>Папка <b>$town_name</b> не обработана</div>";
+            } // endif in_array();
+
         } else {
-            echo "no<br>";
-        }
-    }
+            echo "<div class='error'><b>$town_name</b> не является директорией</div>";
+        } //endif is_dir();
+
+    } // endforeach;
 
     echo "<pre>";
     print_r( $list_town_not_added );
